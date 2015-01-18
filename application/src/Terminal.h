@@ -11,6 +11,11 @@
 #include <string>
 #include <pthread.h>
 
+struct threadArgs {
+	std::string device;
+	bool runFlag;
+};
+
 class Terminal {
 public:
 	void run();
@@ -19,6 +24,7 @@ public:
 private:
 	pthread_t input;
 	pthread_t output;
+	threadArgs args;
 	std::string serialDevice;
 
 	void createTerminalThreads();
@@ -26,6 +32,7 @@ private:
 
 	Terminal(Terminal&);
 	Terminal& operator=(Terminal&);
+	void initThreadArgs(threadArgs& args);
 };
 
 #endif /* TERMINAL_H_ */

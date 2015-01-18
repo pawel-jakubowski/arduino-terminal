@@ -31,7 +31,6 @@ Serial::Serial(std::string newName, int newBaudRate) :
 }
 
 Serial::~Serial() {
-	std::cout << "Serial::~Serial()" << std::endl;
 	close();
 }
 

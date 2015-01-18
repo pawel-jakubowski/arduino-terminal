@@ -12,25 +12,20 @@
 
 using namespace std;
 
-Terminal::Terminal(string device) : input(0), output(0), serialDevice(device) {
+void readAction(arduino::Serial& USBReader) {
+	cout << USBReader.read();
+	cout.flush();
 }
 
-Terminal::~Terminal() {
-}
-
-void* terminalOutput(void* runFlag) {
-	bool *isRunning = reinterpret_cast<bool*>(runFlag);
+void* terminalOutput(void* arguments) {
+	threadArgs *args = reinterpret_cast<threadArgs*>(arguments);
 	try {
-		arduino::Serial USBReader("/dev/ttyUSB0");
-		while (*isRunning)
-		{
-			cout << USBReader.read();
-			cout.flush();
-		}
+		arduino::Serial USBReader(args->device);
+		while (args->runFlag)
+			readAction(USBReader);
 	} catch (string& err) {
 		cerr << "Error: " << err << endl;
 	}
-	cout << "End termialOutput()" << endl;
 	return NULL;
 }
 
@@ -44,18 +39,23 @@ void writeAction(arduino::Serial& USBWriter, std::string& userInput,
 		USBWriter.write(userInput.c_str());
 }
 
-void* terminalInput(void* runFlag) {
-	bool *isRunning = reinterpret_cast<bool*>(runFlag);
+void* terminalInput(void* arguments) {
+	threadArgs *args = reinterpret_cast<threadArgs*>(arguments);
 	std::string userInput;
 	try {
-		arduino::Serial USBWriter("/dev/ttyUSB0");
-		while(*isRunning)
-			writeAction(USBWriter, userInput, isRunning);
+		arduino::Serial USBWriter(args->device);
+		while(args->runFlag)
+			writeAction(USBWriter, userInput, &args->runFlag);
 	} catch (string& err) {
 		cerr << "Error: " << err << endl;
 	}
-	cout << "End termialInput()" << endl;
 	return NULL;
+}
+
+Terminal::Terminal(string device) : input(0), output(0), serialDevice(device) {
+}
+
+Terminal::~Terminal() {
 }
 
 void Terminal::waitForThreads() {
@@ -68,9 +68,14 @@ void Terminal::run() {
 	waitForThreads();
 }
 
+void Terminal::initThreadArgs(threadArgs& args) {
+	args.device = serialDevice;
+	args.runFlag = true;
+}
+
 void Terminal::createTerminalThreads() {
-	bool appIsRunning = true;
-	pthread_create(&input, NULL, terminalInput, &appIsRunning);
-	pthread_create(&output, NULL, terminalOutput, &appIsRunning);
+	initThreadArgs(args);
+	pthread_create(&input, NULL, terminalInput, &args);
+	pthread_create(&output, NULL, terminalOutput, &args);
 }
 

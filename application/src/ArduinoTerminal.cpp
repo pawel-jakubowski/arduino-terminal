@@ -13,7 +13,12 @@
 #include "Terminal.h"
 
 int main(int argc, char *argv[]) {
-	Terminal arduino("/dev/ttyUSB0");
+	std::string serialPort = "/dev/ttyUSB0";
+
+	if(argc == 2)
+		serialPort = argv[1];
+
+	Terminal arduino(serialPort);
 	arduino.run();
 
 	return 0;
