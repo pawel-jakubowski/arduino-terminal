@@ -8,6 +8,8 @@
 #ifndef SERIALTERMINAL_H_
 #define SERIALTERMINAL_H_
 
+#include "Commands.h"
+
 class SerialTerminal {
 	static const unsigned CmdSize = 255;
 	static const uint8_t newLine = 0x01;
@@ -19,6 +21,7 @@ public:
 	~SerialTerminal();
 
 private:
+	const Commands commands;
 	char cmd[CmdSize];
 	uint8_t cmdFlag;
 	int readResult;

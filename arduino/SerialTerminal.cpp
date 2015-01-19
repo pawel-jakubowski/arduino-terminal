@@ -32,6 +32,28 @@ void SerialTerminal::executeCmd() {
 			Serial.print("arduino@nano> ");
 		} else if (strcmp(cmd, "test") == 0) {
 			Serial.println("Test command :)");
+		} else if (strcmp(cmd, "test1") == 0) {
+			Serial.println("Test1 command :)");
+		} else if (strcmp(cmd, "test2") == 0) {
+			Serial.println("Test2 command :)");
+		} else if (strcmp(cmd, "test3") == 0) {
+			Serial.println("Test3 command :)");
+		} else if (strcmp(cmd, "test4") == 0) {
+			Serial.println("Test4 command :)");
+		} else if (strcmp(cmd, "test5") == 0) {
+			Serial.println("Test5 command :)");
+		} else if (strcmp(cmd, "test6") == 0) {
+			Serial.println("Test6 command :)");
+		} else if (strcmp(cmd, "test7") == 0) {
+			Serial.println("Test7 command :)");
+		} else if (strcmp(cmd, "test8") == 0) {
+			Serial.println("Test8 command :)");
+		} else if (strcmp(cmd, "test9") == 0) {
+			Serial.println("Test9 command :)");
+		} else if (strcmp(cmd, "test10") == 0) {
+			Serial.println("Test10 command :)");
+		} else if (strcmp(cmd, "lorem") == 0) {
+			commands.exe("");
 		} else {
 			Serial.print(cmd);
 			Serial.println(": command not found");
