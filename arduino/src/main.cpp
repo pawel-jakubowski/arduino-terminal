@@ -6,7 +6,6 @@ SerialTerminal Terminal;
 
 void setup() {
 	Terminal.init();
-	pinMode(led, OUTPUT);
 }
 
 void loop() {

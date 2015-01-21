@@ -21,7 +21,7 @@ public:
 	~SerialTerminal();
 
 private:
-	const Commands commands;
+	Commands commands;
 	char cmd[CmdSize];
 	uint8_t cmdFlag;
 	int readResult;
