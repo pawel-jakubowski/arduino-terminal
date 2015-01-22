@@ -16,6 +16,9 @@
 #include <unistd.h>     // UNIX standard function definitions
 #include <fcntl.h>      // File control definitions
 
+#include <readline/readline.h>
+#include <readline/history.h>
+
 namespace arduino {
 
 std::unique_ptr<MutexLock> Serial::blockade = std::unique_ptr<MutexLock>(
@@ -34,9 +37,19 @@ Serial::~Serial() {
 	close();
 }
 
+void Serial::readTerminalLine(std::string& str) {
+	blockade->lock();
+	str = ::readline(idPrompt.c_str());
+	blockade->unlock();
+	::add_history(str.c_str());
+}
+
 std::string Serial::getId() {
 	write("");
-	return read();
+	do {
+		idPrompt = read();
+	} while (idPrompt == "");
+	return idPrompt;
 }
 
 void Serial::write(const char& sign) {
@@ -55,14 +68,13 @@ void Serial::write(const char* string, size_t size) {
 }
 
 std::string Serial::read() {
-	blockade->lock();
 	memset(&buf, '\0', sizeof buf);
+	blockade->lock();
 	int n = ::read(fileDescriptor, &buf, sizeof buf);
 	blockade->unlock();
 
 	if (n < 0)
 		throw std::string("Serial::read() error [" + std::to_string(n) + "]");
-
 	return std::string(buf);
 }
 
@@ -132,4 +144,3 @@ bool Serial::isOpened() {
 }
 
 } /* namespace arduino */
-

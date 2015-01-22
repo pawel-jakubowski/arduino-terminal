@@ -8,19 +8,23 @@
 #ifndef TERMINAL_H_
 #define TERMINAL_H_
 
+#include "TerminalInterface.h"
+
 #include <string>
 #include <pthread.h>
 
 struct threadArgs {
 	std::string device;
 	bool runFlag;
+	bool allowRead;
+	int readEnd;
 };
 
-class Terminal {
+class LinuxTerminal : public TerminalInterface {
 public:
 	void run();
-	Terminal(std::string device);
-	virtual ~Terminal();
+	LinuxTerminal(std::string device);
+	virtual ~LinuxTerminal();
 private:
 	pthread_t input;
 	pthread_t output;
@@ -30,8 +34,8 @@ private:
 	void createTerminalThreads();
 	void waitForThreads();
 
-	Terminal(Terminal&);
-	Terminal& operator=(Terminal&);
+	LinuxTerminal(LinuxTerminal&);
+	LinuxTerminal& operator=(LinuxTerminal&);
 	void initThreadArgs(threadArgs& args);
 };
 

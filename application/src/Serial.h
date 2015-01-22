@@ -20,6 +20,7 @@ class Serial {
 	static std::unique_ptr<MutexLock> blockade;
 public:
 	std::string getId();
+	void readTerminalLine(std::string& str);
     void write(const char& sign);
     void write(const char* string);
     void write(const char* string, size_t size);
@@ -27,6 +28,7 @@ public:
     Serial(std::string newName, int newBaudRate = 9600);
     ~Serial();
 private:
+    std::string idPrompt;
     std::string serialPortName;
     int fileDescriptor;
     int baudRate;

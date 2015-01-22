@@ -10,7 +10,7 @@
 #include <sstream>
 #include <pthread.h>
 
-#include "Terminal.h"
+#include "LinuxTerminal.h"
 
 int main(int argc, char *argv[]) {
 	std::string serialPort = "/dev/ttyUSB0";
@@ -18,8 +18,8 @@ int main(int argc, char *argv[]) {
 	if(argc == 2)
 		serialPort = argv[1];
 
-	Terminal arduino(serialPort);
-	arduino.run();
+	TerminalInterface* arduino = new LinuxTerminal(serialPort);
+	arduino->run();
 
 	return 0;
 }
