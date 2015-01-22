@@ -12,7 +12,8 @@
 
 class MutexLock {
 public:
-	bool is_locked();
+	bool isLocked();
+	bool tryToLock();
 	void lock();
 	void unlock();
 

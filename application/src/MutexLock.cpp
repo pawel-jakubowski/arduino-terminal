@@ -7,19 +7,32 @@
 
 #include "MutexLock.h"
 
+#include <iostream>
+
 MutexLock::MutexLock() :
 		locked(false), error(0) {
 	pthread_mutex_init(&m, NULL);
 }
 
+bool MutexLock::tryToLock() {
+	if(pthread_mutex_trylock(&m) == 0) {
+		locked = true;
+		return true;
+	}
+	return false;
+}
+
 void MutexLock::lock() {
-	error = pthread_mutex_lock(&m);
-	locked = (error == 0);
+	while(tryToLock()) {}
+//	error = pthread_mutex_lock(&m);
+//	locked = (error == 0);
 }
 
 void MutexLock::unlock() {
-	if (locked)
+	if (locked) {
 		pthread_mutex_unlock(&m);
+		locked = false;
+	}
 }
 
 MutexLock::~MutexLock() {
@@ -27,7 +40,7 @@ MutexLock::~MutexLock() {
 	pthread_mutex_destroy(&m);
 }
 
-bool MutexLock::is_locked() {
+bool MutexLock::isLocked() {
 	return locked;
 }
 
