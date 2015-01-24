@@ -1,15 +1,19 @@
 /*
- * id.h
+ * id.cpp
  *
  *  Created on: 21 sty 2015
  *      Author: Pawel Jakubowski
  */
 
-#ifndef ID_H_
-#define ID_H_
+#include "id.h"
+#include <Arduino.h>
 
 namespace commands {
-void id();
+
+void id() {
+	Serial.print("arduino@nano> ");
 }
 
-#endif /* ID_H_ */
+}
+
+

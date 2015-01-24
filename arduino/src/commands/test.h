@@ -9,11 +9,7 @@
 #define TEST_H_
 
 namespace commands {
-
-void test() {
-	Serial.println("Test command - if you see this it's work :)");
-}
-
+void test();
 }
 
 #endif /* TEST_H_ */
