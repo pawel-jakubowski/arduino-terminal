@@ -11,6 +11,8 @@
 #include <commands/id.h>
 #include <commands/test.h>
 #include <commands/portStatus.h>
+#include <commands/proc_end.h>
+#include <commands/proc_dummy.h>
 
 #define END_OF_TEXT (char)0x03 // ASCII sign to know that command is over
 
@@ -78,9 +80,11 @@ void Commands::addCommand(const char* cmd, void (*func)()) {
 Commands::Commands()
 		: currCmdsNum(0) {
 	addCommand("", commands::id);
-	addCommand("test", commands::test);
-	addCommand("dport", commands::DigitalPortStatus);
 	addCommand("aport", commands::AnalogPortStatus);
+	addCommand("dport", commands::DigitalPortStatus);
+	addCommand("q", process::end);
+	addCommand("start dummy", process::startDummy);
+	addCommand("test", commands::test);
 }
 
 Commands::Commands(int) : currCmdsNum(0) {

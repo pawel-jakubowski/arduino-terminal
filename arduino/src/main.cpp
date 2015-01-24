@@ -2,18 +2,17 @@
 #include "SerialTerminal.h"
 
 const int led = 13;
+void (* volatile proc_ptr)() = 0;
 SerialTerminal Terminal;
 
 void setup() {
-	pinMode(led-2, OUTPUT);
-	pinMode(led-1, OUTPUT);
-	pinMode(led, OUTPUT);
-	digitalWrite(led, HIGH);
-	digitalWrite(led - 1, HIGH);
 	Terminal.init();
 }
 
 void loop() {
 	Terminal.readInput();
 	Terminal.executeCmd();
+	delay(5); // dirty hack to allow user to end process
+	if (proc_ptr != 0)
+		proc_ptr();
 }

@@ -28,7 +28,7 @@ private:
 };
 
 class Commands {
-	static const unsigned CmdsNum = 4; // Change it if you add new command
+	static const unsigned CmdsNum = 6; // Change it if you add new command
 public:
 	void printCommands() const;
 	void addCommand(const char* cmd, void (*func)());
