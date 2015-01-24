@@ -32,7 +32,7 @@ private:
     std::string serialPortName;
     int fileDescriptor;
     int baudRate;
-    char buf[255] = {'\0'};
+    char buf[1024] = {'\0'};
     bool portOpen;
     struct termios serialPortSettings;
     struct termios oldSerialPortSettings;

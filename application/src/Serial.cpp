@@ -19,6 +19,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+#define END_OF_TEXT 0x03
+
 namespace arduino {
 
 std::unique_ptr<MutexLock> Serial::blockade = std::unique_ptr<MutexLock>(
@@ -47,8 +49,9 @@ void Serial::readTerminalLine(std::string& str) {
 std::string Serial::getId() {
 	write("");
 	do {
-		idPrompt = read();
-	} while (idPrompt == "");
+		idPrompt += read();
+	} while (idPrompt.back() != END_OF_TEXT);
+	idPrompt.pop_back();
 	return idPrompt;
 }
 

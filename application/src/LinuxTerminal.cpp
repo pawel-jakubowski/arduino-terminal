@@ -17,25 +17,31 @@
 
 #include "Serial.h"
 
+#define END_OF_TEXT 0x03
+
 using namespace std;
 
 void readAction(arduino::Serial& USBReader, threadArgs* args) {
 	std::string readResult(USBReader.read());
-	cout << readResult << flush;
-	if (!args->readEnd && readResult == "") {
-		cout << "ReadEnds" << flush;
+	if (!args->readEnd && readResult.back() == END_OF_TEXT) {
+		readResult.pop_back();
+		cout << readResult << flush;
 		args->readEnd = true;
 	}
+	else
+		cout << readResult << flush;
 }
 
 void* terminalOutput(void* arguments) {
 	threadArgs *args = reinterpret_cast<threadArgs*>(arguments);
-	while(!args->allowRead && args->runFlag) {}
+	while (!args->allowRead && args->runFlag) {
+	}
 	try {
 		arduino::Serial USBReader(args->device);
 		while (args->runFlag)
 			readAction(USBReader, args);
 	} catch (string& err) {
+		args->runFlag = false;
 		cerr << "Error: " << err << endl;
 	}
 	return NULL;
@@ -50,7 +56,6 @@ void writeAction(arduino::Serial& USBWriter, std::string& userInput,
 		USBWriter.write(userInput.c_str());
 		args->readEnd = false;
 		while (!args->readEnd) {}
-//		usleep(7*10e3);
 	}
 }
 
@@ -64,6 +69,7 @@ void* terminalInput(void* arguments) {
 		while (args->runFlag)
 			writeAction(USBWriter, userInput, args);
 	} catch (string& err) {
+		args->runFlag = false;
 		cerr << "Error: " << err << endl;
 	}
 	return NULL;
