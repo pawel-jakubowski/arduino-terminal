@@ -11,6 +11,8 @@
 #include <string>
 #include <TestStream.h>
 
+#define END "\x3"
+
 typedef void(*f_ptr)(void);
 
 // COMMAND TEST
@@ -29,7 +31,7 @@ TEST_F(CommandTest, testName) {
 
 TEST_F(CommandTest, testExe) {
 	cmd.exe();
-	EXPECT_EQ("Test command :)", buffer.str());
+	EXPECT_EQ("Test command :)" END, buffer.str());
 }
 
 // COMMANDS TEST
@@ -59,7 +61,7 @@ TEST_F(CommandsTest, checkCommandsNames) {
 }
 
 TEST_F(CommandsTest, checkFunctions) {
-	std::string expected[] = {"empty", "test command", "lorem ipsum dolor" };
+	std::string expected[] = {"empty" END, "test command" END, "lorem ipsum dolor" END };
 
 	for(unsigned i=0; i<cmds.len(); i++)
 	{
@@ -71,7 +73,7 @@ TEST_F(CommandsTest, checkFunctions) {
 
 TEST_F(CommandsTest, checkAutoExe) {
 	std::string names[] = {"", "test", "lorem" };
-	std::string expected[] = {"empty", "test command", "lorem ipsum dolor" };
+	std::string expected[] = {"empty" END, "test command" END, "lorem ipsum dolor" END };
 
 	for(unsigned i=0; i<cmds.len(); i++)
 	{
@@ -79,4 +81,11 @@ TEST_F(CommandsTest, checkAutoExe) {
 		EXPECT_EQ(expected[i], buffer.str());
 		buffer.str(std::string());
 	}
+}
+
+TEST_F(CommandsTest, printCommands) {
+	std::string expected("test\nlorem\n" END);
+	cmds.printCommands();
+	EXPECT_EQ(expected, buffer.str());
+	buffer.str(std::string());
 }
