@@ -26,7 +26,7 @@ private:
 	uint8_t cmdFlag;
 	int readResult;
 
-	void processReadedSign(char readedSign);
+	void processReadedSign();
 };
 
 #endif /* SERIALTERMINAL_H_ */

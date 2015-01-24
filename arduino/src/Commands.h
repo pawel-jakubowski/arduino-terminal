@@ -21,15 +21,16 @@ public:
 	void init(const char* cmd, void (*func)());
 	void exe() const;
 	NumBool isNamed(const char* str) const;
-	const char* getName();
+	const char* getName() const;
 private:
 	char name[NameLength];
 	void (*function)();
 };
 
 class Commands {
-	static const unsigned CmdsNum = 3; // Change it if you add new command
+	static const unsigned CmdsNum = 4; // Change it if you add new command
 public:
+	void printCommands() const;
 	void addCommand(const char* cmd, void (*func)());
 	void exe(const char* str) const;
 	Commands();
@@ -41,6 +42,8 @@ public:
 private:
 	unsigned currCmdsNum;
 	Command commands[CmdsNum];
+
+	void cmdNotFound(const char* str) const;
 };
 
 #endif /* COMMANDS_H_ */

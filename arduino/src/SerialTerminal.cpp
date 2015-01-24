@@ -22,8 +22,9 @@ void SerialTerminal::init() {
 
 void SerialTerminal::readInput() {
 	readResult = Serial.read();
-	if (readResult >= 0)
-		processReadedSign(static_cast<unsigned char>(readResult));
+	if (readResult >= 0){
+		processReadedSign();
+	}
 }
 
 void SerialTerminal::executeCmd() {
@@ -34,11 +35,11 @@ void SerialTerminal::executeCmd() {
 	}
 }
 
-void SerialTerminal::processReadedSign(char readedSign) {
-	if (readedSign == '\n') {
+void SerialTerminal::processReadedSign() {
+	if ((unsigned char)readResult == '\n') {
 		cmdFlag |= newLine;
 	} else {
-		char str[2] = { readedSign, '\0' };
+		char str[2] = { (unsigned char)readResult, '\0' };
 		strcat(cmd, str);
 	}
 }

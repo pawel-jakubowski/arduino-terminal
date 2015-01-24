@@ -10,6 +10,11 @@
 #include <Arduino.h>
 #include <commands/id.h>
 #include <commands/test.h>
+#include <commands/portStatus.h>
+
+#define END_OF_TEXT (char)0x03 // ASCII sign to know that command is over
+
+/* ~~~~~~~~~~~~~ COMMAND ~~~~~~~~~~~~~~ */
 
 void Command::init(const char* cmd, void (*func)()) {
 	if (strlen(cmd) >= NameLength)
@@ -22,7 +27,7 @@ NumBool Command::isNamed(const char* str) const {
 	return (strcmp(name, str) == 0) ? NUM_TRUE : NUM_FALSE;
 }
 
-const char* Command::getName() {
+const char* Command::getName() const {
 	return name;
 }
 
@@ -33,17 +38,35 @@ Command::Command() :
 
 void Command::exe() const {
 	function();
+	Serial.print(END_OF_TEXT);
+}
+
+/* ~~~~~~~~~~~~~ COMMANDS ~~~~~~~~~~~~~ */
+
+void Commands::printCommands() const {
+	for(unsigned i = 1; i < currCmdsNum; i++)
+		Serial.println(commands[i].getName());
+	Serial.print(END_OF_TEXT);
+}
+
+void Commands::cmdNotFound(const char* str) const {
+	Serial.print(str);
+	Serial.println(": command not found");
+	Serial.print(END_OF_TEXT);
 }
 
 void Commands::exe(const char* str) const {
+	if (strcmp("help",str) == 0){
+		printCommands();
+		return;
+	}
 	for(unsigned i = 0; i < currCmdsNum; i++)
 		if (commands[i].isNamed(str))
 		{
 			commands[i].exe();
 			return;
 		}
-	Serial.print(str);
-	Serial.println(": command not found");
+	cmdNotFound(str);
 }
 
 void Commands::addCommand(const char* cmd, void (*func)()) {
@@ -56,7 +79,10 @@ Commands::Commands()
 		: currCmdsNum(0) {
 	addCommand("", commands::id);
 	addCommand("test", commands::test);
+	addCommand("dport", commands::DigitalPortStatus);
+	addCommand("aport", commands::AnalogPortStatus);
 }
 
 Commands::Commands(int) : currCmdsNum(0) {
 }
+
